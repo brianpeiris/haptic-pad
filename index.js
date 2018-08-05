@@ -1,20 +1,24 @@
 window.onerror = log;
 
-const ui = getUI(["canvas", "info", "image"]);
+const ui = getUI(["images", "canvas", "info", "image", "vibrationInfo", "desktopWarning"]);
 
 const ctx = ui.canvas.getContext('2d');
 let imageData;
 
-let lastVal = 0;
+let lastVal = null;
 const stride = ui.canvas.width * 4;
 const duration = 100;
-const period = 50;
+const period = 100;
 const pattern = new Array(duration / period * 2)
 
 function processPointer(x, y) {
   x = x - ui.canvas.offsetLeft;
   y = y - ui.canvas.offsetTop;
   const val = imageData[x * 4 + y * stride];
+  if (lastVal == null) {
+    lastVal = val;
+    return;
+  }
   if (lastVal === val) return;
 
   const diff = (lastVal - val) / 255;
@@ -32,39 +36,49 @@ function processPointer(x, y) {
   navigator.vibrate(pattern);
 }
 
-let resolveSocket;
-const socketPromise = new Promise(resolve => {
-  resolveSocket = resolve
-});
-
-on(document.body, 'paste', e => {
-  if (!e.clipboardData.files.length) return;
+function loadImage() {
   on(ui.image, 'load', async () => {
     ctx.drawImage(ui.image, 0, 0, ui.canvas.width, ui.canvas.height);
-    const data = ctx.getImageData(0, 0, ui.canvas.width, ui.canvas.height).data;
-    const socket = await socketPromise;
-    socket.emit('scroll', Array.from(data));
+    imageData = ctx.getImageData(0, 0, ui.canvas.width, ui.canvas.height).data;
   }, {once: true});
-  ui.image.src=URL.createObjectURL(e.clipboardData.files[0])
-});
+  ui.image.src=`images/${ui.images.value}`;
+}
+loadImage();
+
+on(ui.images, 'change', loadImage);
 
 on(ui.canvas, "touchmove", e => {
   const touch = e.touches[0];
   processPointer(touch.clientX, touch.clientY);
 });
 
-const socketIntervalId = setInterval(() => {
-  if (!window.___browserSync___) return;
-  clearInterval(socketIntervalId);
-  const socket = window.___browserSync___.socket;
-  resolveSocket(socket);
-  // Hijack browser-sync's websocket
-  socket.on('scroll', data => {
-    imageData = data;
-    ctx.putImageData(new ImageData(Uint8ClampedArray.from(data), 300, 300), 0, 0);
-  });
-  log('connected');
-}, 1000);
+on(ui.canvas, "touchup", e => {
+  lastVal = null;
+});
+
+const mobile = /like mac os x/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent);
+if (mobile) {
+  ui.vibrationInfo.style.display = 'block';
+} else {
+  ui.desktopWarning.style.display = 'block';
+}
+
+delegate('toast', 'click', document.body, target => {
+  target.style.display = 'none';
+});
+
+function delegate(className, event, el, func) {
+  const handler = e => {
+    let currNode = e.target;
+    while (currNode !== e.currentTarget) {
+      if (currNode.className.includes(className)) {
+        func(currNode);
+      }
+      currNode = currNode.parentNode;
+    }
+  };
+  on(el, event, handler);
+}
 
 function on(el, event, func, options) {
   el.addEventListener(event, func, options);

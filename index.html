@@ -4,24 +4,42 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no" />
     <title>haptic-pad</title>
+
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
     <link rel="stylesheet" href="index.css" />
+
     <script src="index.js" defer></script>
   </head>
   <body>
-    <select>
-      <option value="brick.png">brick</option>
-      <option value="circular-gradients.png">circular-gradients</option>
-      <option value="denim.png">denim</option>
-      <option value="FabricRope001_DISP16_1K@2x.jpg">FabricRope001_DISP16_1K@2x</option>
-      <option value="rock.png">rock</option>
-      <option value="simple-gradients.png">simple-gradients</option>
-      <option value="simple-shapes.png">simple-shapes</option>
-      <option value="special-shapes.png">special-shapes</option>
-      <option value="text.png">text</option>
-      <option value="wood.png">wood</option>
-    </select>
-    <canvas id="canvas" width="300" height="300"></canvas>
-    <img id="image" />
-    <div id="info"></div>
+    <main>
+      <h1>Haptic Pad</h1>
+      <select id="images">
+        <option value="simple-shapes.png">Simple Shapes</option>
+        <option value="simple-gradients.png">Simple Gradients</option>
+        <option value="circular-gradients.png">Circular Gradients</option>
+        <option value="special-shapes.png">Special Shapes</option>
+        <option value="text.png">Text</option>
+        <option value="brick.png">Brick</option>
+        <option value="denim.png">Denim</option>
+        <option value="fabric-rope.jpg">Fabric Rope</option>
+        <option value="rock.png">Rock</option>
+        <option value="wood.png">Wood</option>
+      </select>
+      <canvas id="canvas" width="300" height="300"></canvas>
+      <img id="image" />
+      <div id="info"></div>
+      <span id="desktopWarning" class="warning toast">
+        <i class="material-icons">warning</i>
+        Haptic Pad is meant to be used on mobile devices with vibration capabilities.
+      </span>
+      <span id="vibrationInfo" class="info toast">
+        <i class="material-icons">info</i>
+        Vibration intensity is based on your device's vibration settings.
+        For best results, change your settings to full intensity and place your device on a table.
+      </span>
+      <span class="credits">Displacement maps from poliigon.com</span>
+    </main>
   </body>
 </html>
