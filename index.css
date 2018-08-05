@@ -1,0 +1,17 @@
+body { 
+  text-align: center;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+select, canvas { display: block; }
+#canvas {
+  border: 1px solid red;
+}
+#image { display: none; }
+ol { 
+  text-align: left;
+  height: 180px;
+  overflow-y: hidden;
+}
