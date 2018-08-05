@@ -41,7 +41,7 @@ function loadImage() {
     ctx.drawImage(ui.image, 0, 0, ui.canvas.width, ui.canvas.height);
     imageData = ctx.getImageData(0, 0, ui.canvas.width, ui.canvas.height).data;
   }, {once: true});
-  ui.image.src=`images/${ui.images.value}`;
+  ui.image.src=`assets/${ui.images.value}`;
 }
 loadImage();
 
